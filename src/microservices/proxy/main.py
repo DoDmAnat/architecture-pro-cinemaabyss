@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-MONOLITH_URL = os.getenv("MONOLITH_URL", "http://monolith:8088")
+MONOLITH_URL = os.getenv("MONOLITH_URL", "http://monolith:8080")
 MOVIES_SERVICE_URL = os.getenv("MOVIES_SERVICE_URL", "http://movies-service:8081")
 EVENTS_SERVICE_URL = os.getenv("EVENTS_SERVICE_URL", "http://events-service:8082")
 GRADUAL_MIGRATION = os.getenv("GRADUAL_MIGRATION", "true")
