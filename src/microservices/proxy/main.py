@@ -47,13 +47,12 @@ async def forward_request(request: Request, target_url: str):
             content=body,
             timeout=5.0
         )
-        if response.status_code == 200:
-            return JSONResponse(
-                content=response.json(),
-                status_code=response.status_code,
-            )
         if response.status_code == 404:
             raise HTTPException(status_code=404, detail="Нет такой страницы")
+        return JSONResponse(
+                content=response.json() if response.headers.get("content-type", "").startswith("application/json") else response.text,
+                status_code=response.status_code,
+            )
     except httpx.HTTPError as e:
         raise HTTPException(status_code=503, detail=f"Service unavailable: {str(e)}")
 
