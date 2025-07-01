@@ -1,0 +1,39 @@
+@startuml SmartHome_Containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Пользователь", "Пользователь Кинобездны")
+
+System_Boundary(cinema, "Система Кинобездна") {
+    Container(web_app, "Веб-приложение", "React", "Веб интерфейс для управления системой")
+    Container(proxy, "API Gateway", "Python", "Обратный прокси для постепенного перехода от монолита к микросервисам")
+    Container(users, "Сервис управления пользователями", "Go", "Управление пользователями")
+    Container(movies, "Сервис метаданных фильмов", "Go")
+    Container(recomendation, "Сервис рекомендаций", "Go")
+    Container(subscriptions, "Сервис подписок", "Go")
+    Container(payments, "Сервис обработки платежей", "Go")
+    Container(events, "Серивис событий", "Kafka", "Обрабатывает коммуникацию между сервисами")
+
+    ContainerDb(users_db, "БД пользователей", "PostgreSQL", "Хранение данных пользователей")
+}
+
+
+System_Ext(monolith, "Монолит сервиса", "Go")
+System_Ext(recomendation_system, "Внешняя система рекомендаций", "Go")
+System_Ext(cinemas, "Внешние кинотеатры", "Go")
+System_Ext(payment_system, "Платежная система", "Go")
+
+Rel(user, web_app, "HTTPS")
+Rel(web_app, proxy, "Маршрутизация", "HTTPS")
+Rel(proxy, monolith, "REST")
+Rel(proxy, movies, "REST")
+Rel(proxy, users, "REST")
+Rel(proxy, recomendation, "REST")
+Rel(proxy, subscriptions, "REST")
+Rel(proxy, payments, "REST")
+Rel(users, users_db, "Чтение/запись", "SQL")
+
+Rel(movies, cinemas, "REST")
+Rel(payments, payment_system, "REST")
+Rel(recomendation, events, "REST")
+Rel(recomendation_system, events, "REST")
+@enduml
